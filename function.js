@@ -33,42 +33,62 @@ matrizPequena.forEach(function(matrizPequena) {
 visualMatriz2 += '</ul>';
 
 //codigo en desarrollo
-let listaTotal=[]
-let opciones=materiasElegidas;
-let nueva=[];
-opciones.forEach(function(b){nueva.push([b])});
-let agregado=[]
-while(nueva.length){
-    
-    agregado=nueva;
-    nueva=[];
-    agregado.forEach(function(b){
-        opciones.forEach(function(c){
-            if(c<=b[b.length-1])return;
-            let choque=false;
-            b.forEach(function(d){
-                if(matriz[c][d]!=0){choque=true};
-            });
-            if(!choque){
-                let e = b;
-                e.push(c);
-                nueva.push(e)
-            };
-        });
-    });
-agregado.forEach(function(b){listaTotal.push(b)});
+let listaNueva = materiasElegidas.map(i => [i]);
+let listaAgregados = [];
+let listaTotal = [];
+let tablaInterseccionesPura=matriz;
+
+while (listaNueva.length > 0) {
+    // Add items from listaAgregados to listaTotal
+    for (let i of listaAgregados) {
+        listaTotal.push(i);
+    }
+    listaAgregados = [];
+
+    // Move items from listaNueva to listaAgregados
+    for (let i of listaNueva) {
+        listaAgregados.push(i);
+    }
+    listaNueva = [];
+
+    // Process listaAgregados to create new combinations
+    for (let i of listaAgregados) {
+        for (let j of materiasElegidas) {
+            let elElementoNoChoca = true;
+            if (j < i[i.length - 1]) continue;
+            if (i.includes(j)) continue;
+
+            // Check for intersections
+            for (let k of i) {
+                if (tablaInterseccionesPura[k][j] !== 0) {
+                    elElementoNoChoca = false;
+                    break; // Exit the loop if a conflict is found
+                }
+            }
+
+            if (elElementoNoChoca) {
+                listaNueva.push([...i, j]); // Create a new array with the current element added
+            }
+        }
+    }
+}
+
+// Add any remaining items in listaAgregados to listaTotal
+for (let i of listaAgregados) {
+    listaTotal.push(i);
 }
 
 //codigo en desarrollo
 
 var visualMatriz3 = '<ul>'
-listaTotal.forEach(function(listaTotal) {
-  visualMatriz3 += '<li>'+ listaTotal + '</li>';
+listaTotal.forEach(function(a) {
+  visualMatriz3 += '<li>'+ a + '</li>';
 }); 
 visualMatriz3 += '</ul>';
 
 document.getElementById("result").innerHTML = '</br>'+
 visualMatriz1+'</br>'+materiasElegidas+'</br>'+visualMatriz2+'</br>'+visualMatriz3;
-console.log(listaTotal)
+//console.log(listaTotal)
+listaTotal=0
 }
 
